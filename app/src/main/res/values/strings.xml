@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">News App</string>
+    <string name="news_image">news image</string>
+    <string name="news_headline">News Headline</string>
+    <string name="published_at"><b>Published at:</b></string>
+    <string name="source"><i><b>Source</b></i></string>
+    <string name="full_story">Full Story</string>
+    <string name="attribution">powered by NewsAPI.org</string>
+    <string name="head_missing">HeadLine Missing</string>
+    <string name="desc_missing">Description Missing</string>
+    <string name="story_miss">Story Missing</string>
+    <string name="unknown">Unknown</string>
+</resources>
