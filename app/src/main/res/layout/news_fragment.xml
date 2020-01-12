@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DAD4CD"
+    android:background="@color/frag_back"
     android:orientation="vertical"
     android:weightSum="100">
 
@@ -13,15 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="33"
-        android:contentDescription="@string/news_image"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:background="@android:color/white"
+        android:contentDescription="@string/news_image" />
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="55">
+        android:layout_weight="55"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,23 +63,17 @@
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/txtPublished"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_weight="5"
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/txtSource"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:layout_marginStart="5dp"
-        android:layout_weight="5"
+        android:layout_weight="6"
+        android:gravity="bottom"
         android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/attribution"
@@ -88,5 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="10dp"
-        android:text="@string/attribution" />
+        android:layout_weight="5"
+        android:gravity="bottom"
+        android:text="@string/attribution"
+        android:textSize="13sp" />
 </LinearLayout>

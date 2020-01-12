@@ -1,6 +1,8 @@
 package com.pravesh.newsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -8,29 +10,20 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class MainActivity extends FragmentActivity {
     RequestQueue requestQueue;
-    int noOfFragments = 3;
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
     JSONArray articleArray;
@@ -40,14 +33,12 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.pager);
-        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
         //Setting page change animation
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         //instantiate the request queue
         requestQueue = Volley.newRequestQueue(this);
-        Log.d("BeforeCall", "onCreate: " + noOfFragments);
+
 
         //creating GET request
         Request jsonObject = new JsonObjectRequest(Request.Method.GET,
@@ -55,12 +46,12 @@ public class MainActivity extends FragmentActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("response", "onResponse: Entering");
                         try {
                             if (response.getString("status").equals("ok")) {
-                                noOfFragments = response.getInt("totalResults");
                                 articleArray = response.getJSONArray("articles");
-                                Log.d("DuringCall", "onResponse: " +articleArray.toString());
+                                pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), articleArray);
+                                viewPager.setAdapter(pagerAdapter);
+
 
                             }
                         } catch (JSONException e) {
@@ -72,14 +63,11 @@ public class MainActivity extends FragmentActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.d("error", "onErrorResponse: "+error);
+                        Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
 
                     }
                 });
         requestQueue.add(jsonObject);
-
-        Log.d("AfterCall", "onCreate: " + noOfFragments);
 
 
     }
@@ -94,8 +82,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+        JSONArray articles;
+
+        public ScreenSlidePagerAdapter(FragmentManager fm, JSONArray articles) {
             super(fm);
+            this.articles = articles;
         }
 
         @Override
@@ -107,12 +98,12 @@ public class MainActivity extends FragmentActivity {
                 articles = articleArray.getJSONObject(position);
 
                 JSONObject source = articles.getJSONObject("source");
-                String sourcename = source.getString("name");
+                String sourcename = getString(R.string.source) + source.getString("name");
                 String headline = articles.getString("title");
                 String description = articles.getString("description");
-                String pubishedAt = DateFormat.getDateInstance().format(articles.getString("publishedAt"));
                 String content = articles.getString("content");
-                newsFragment = NewsFragment.newInstance(0, headline, description, content, pubishedAt, sourcename);
+                String imageurl = articles.getString("urlToImage");
+                newsFragment = NewsFragment.newInstance(imageurl, headline, description, content, sourcename);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -122,7 +113,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return noOfFragments;
+            return articles.length();
         }
     }
 
